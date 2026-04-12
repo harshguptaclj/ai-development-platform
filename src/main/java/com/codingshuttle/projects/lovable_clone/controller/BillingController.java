@@ -1,9 +1,6 @@
 package com.codingshuttle.projects.lovable_clone.controller;
 
-import com.codingshuttle.projects.lovable_clone.dto.subscription.CheckoutRequest;
-import com.codingshuttle.projects.lovable_clone.dto.subscription.CheckoutResponse;
-import com.codingshuttle.projects.lovable_clone.dto.subscription.PlanResponse;
-import com.codingshuttle.projects.lovable_clone.dto.subscription.SubscriptionResponse;
+import com.codingshuttle.projects.lovable_clone.dto.subscription.*;
 import com.codingshuttle.projects.lovable_clone.service.PlanService;
 import com.codingshuttle.projects.lovable_clone.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
@@ -36,6 +33,12 @@ public class BillingController {
     ){
         Long userId = 1L;
         return ResponseEntity.ok(subscriptionService.createCheckoutSessionUrl(request,userId));
+    }
+
+    @PostMapping("/api/stripe/portal")
+    public ResponseEntity<PortalResponse> openCustomerPortal(){
+        Long userId = 1L;
+        return ResponseEntity.ok(subscriptionService.openCustomerPortal(userId));
     }
 
 }

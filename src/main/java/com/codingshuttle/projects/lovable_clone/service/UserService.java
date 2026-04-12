@@ -1,5 +1,7 @@
 package com.codingshuttle.projects.lovable_clone.service;
 
-public interface UserService {
+import com.codingshuttle.projects.lovable_clone.dto.auth.UserProfileResponse;
 
+public interface UserService {
+    UserProfileResponse getProfile(Long userId);
 }
