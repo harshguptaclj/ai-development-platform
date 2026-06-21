@@ -37,7 +37,9 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public ProjectResponse createProject(ProjectRequest request, Long userId) {
 
-        User owner = userRepository.findById(userId).orElseThrow();
+        User owner = userRepository.findById(userId).orElseThrow(
+                () -> new ResourceNotFoundException("User", userId.toString())
+        );
 
         Project project = Project.builder()
                 .name(request.name())
