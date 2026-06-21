@@ -88,10 +88,6 @@ public class ProjectServiceImpl implements ProjectService {
 
         Project project = getAccessibleProjectById(id, userId);
 
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("You are not allowed to update");
-        }
-
         project.setName(request.name());
         project = projectRepository.save(project);
 
@@ -102,10 +98,6 @@ public class ProjectServiceImpl implements ProjectService {
     public void softDelete(Long id, Long userId) {
 
         Project project = getAccessibleProjectById(id, userId);
-
-        if(!project.getOwner().getId().equals(userId)){
-            throw new RuntimeException("You are not allowed to delete");
-        }
 
         project.setDeletedAt(Instant.now());
 
