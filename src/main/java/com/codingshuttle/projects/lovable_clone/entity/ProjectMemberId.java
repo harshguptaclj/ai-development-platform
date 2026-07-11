@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 @Getter
 @Setter
 @Embeddable
+
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)

@@ -4,7 +4,7 @@ import com.codingshuttle.projects.lovable_clone.dto.subscription.PlanLimitsRespo
 import com.codingshuttle.projects.lovable_clone.dto.subscription.UsageTodayResponse;
 
 public interface UsageService {
-    UsageTodayResponse getTodayUsageOfUser(Long userId);
+    UsageTodayResponse getTodayUsageOfUser();
 
-    PlanLimitsResponse getCurrentSubscriptionLimitsOfUser(Long userId);
+    PlanLimitsResponse getCurrentSubscriptionLimitsOfUser();
 }
