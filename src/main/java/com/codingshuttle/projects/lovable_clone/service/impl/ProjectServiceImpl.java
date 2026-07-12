@@ -14,15 +14,19 @@ import com.codingshuttle.projects.lovable_clone.repository.ProjectMemberReposito
 import com.codingshuttle.projects.lovable_clone.repository.ProjectRepository;
 import com.codingshuttle.projects.lovable_clone.repository.UserRepository;
 import com.codingshuttle.projects.lovable_clone.security.AuthUtil;
+import com.codingshuttle.projects.lovable_clone.security.SecurityExpressions;
 import com.codingshuttle.projects.lovable_clone.service.ProjectService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.List;
+
+import static org.springframework.data.jpa.domain.AbstractPersistable_.id;
 
 @Service
 @RequiredArgsConstructor
@@ -35,6 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMapper projectMapper;
     ProjectMemberRepository projectMemberRepository;
     AuthUtil authUtil;
+    private final SecurityExpressions security;
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
@@ -80,17 +85,19 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public ProjectResponse getUserProjectById(Long id) {
+    @PreAuthorize("@security.canViewProject(#projectId)")
+    public ProjectResponse getUserProjectById(Long projectId) {
 
-        Project project = getAccessibleProjectById(id);
+        Project project = getAccessibleProjectById(projectId);
 
         return projectMapper.toProjectResponse(project);
     }
 
     @Override
-    public ProjectResponse updateProject(Long id, ProjectRequest request) {
+    @PreAuthorize("@security.canEditProject(#projectId)")
+    public ProjectResponse updateProject(Long projectId, ProjectRequest request) {
 
-        Project project = getAccessibleProjectById(id);
+        Project project = getAccessibleProjectById(projectId);
 
         project.setName(request.name());
         project = projectRepository.save(project);
@@ -99,9 +106,10 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public void softDelete(Long id) {
+    @PreAuthorize("@security.getCanDeleteProject(#projectId)")
+    public void softDelete(Long projectId) {
 
-        Project project = getAccessibleProjectById(id);
+        Project project = getAccessibleProjectById(projectId);
 
         project.setDeletedAt(Instant.now());
 
