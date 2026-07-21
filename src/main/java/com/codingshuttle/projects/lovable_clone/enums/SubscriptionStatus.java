@@ -1,9 +1,9 @@
 package com.codingshuttle.projects.lovable_clone.enums;
 
-public enum SubsciptionStatus {
+public enum SubscriptionStatus {
     ACTIVE,
     TRAILING,
     CANCELED,
     PAST_DUE,
-    INCOMPLETE
+    TRIALING, INCOMPLETE
 }

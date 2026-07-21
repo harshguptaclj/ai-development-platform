@@ -1,6 +1,6 @@
 package com.codingshuttle.projects.lovable_clone.entity;
 
-import com.codingshuttle.projects.lovable_clone.enums.SubsciptionStatus;
+import com.codingshuttle.projects.lovable_clone.enums.SubscriptionStatus;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
@@ -18,7 +18,7 @@ public class Subscription {
     User user;
     Plan plan;
 
-    SubsciptionStatus status;
+    SubscriptionStatus status;
 
     String stripeSubscriptionId;
 
