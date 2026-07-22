@@ -1,6 +1,6 @@
 spring:
   application:
-    name: lovable-clone
+    name: ai-dev-platform
     description: this is application
 
   datasource:
