@@ -8,11 +8,11 @@
 		<version>4.0.2</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.codingshuttle.projects</groupId>
-	<artifactId>lovable-clone</artifactId>
+	<groupId>com.harshgupta.projects</groupId>
+	<artifactId>ai-dev-platform</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>lovable-clone</name>
-	<description>Lovable Clone in Spring Boot 0 to 100 Course</description>
+	<name>ai-dev-platform</name>
+	<description>AI Dev Platform using Spring Boot</description>
 	<url/>
 	<licenses>
 		<license/>
