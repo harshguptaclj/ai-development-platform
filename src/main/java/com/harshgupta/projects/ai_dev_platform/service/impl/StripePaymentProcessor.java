@@ -30,8 +30,8 @@ import java.util.Map;
 public class StripePaymentProcessor implements PaymentProcessor {
 
     private final AuthUtil authUtil;
-    private final PlanRepository planRepository;
     private final UserRepository userRepository;
+    private final PlanRepository planRepository;
     private final SubscriptionService subscriptionService;
 
     @Value("${client.url}")

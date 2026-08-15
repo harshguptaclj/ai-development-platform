@@ -10,6 +10,7 @@ import com.harshgupta.projects.ai_dev_platform.entity.User;
 import com.harshgupta.projects.ai_dev_platform.enums.SubscriptionStatus;
 import com.harshgupta.projects.ai_dev_platform.error.ResourceNotFoundException;
 import com.harshgupta.projects.ai_dev_platform.mapper.SubscriptionMapper;
+import com.harshgupta.projects.ai_dev_platform.repository.PlanRepository;
 import com.harshgupta.projects.ai_dev_platform.repository.SubscriptionRepository;
 import com.harshgupta.projects.ai_dev_platform.repository.UserRepository;
 import com.harshgupta.projects.ai_dev_platform.security.AuthUtil;
