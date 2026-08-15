@@ -186,11 +186,11 @@ public class StripePaymentProcessor implements PaymentProcessor {
     }
 
     private void handleInvoicePaymentFailed(Invoice invoice) {
-        String subId = extractSubscriptionId(invoice);
+        String gatewaySubscriptionId = extractSubscriptionId(invoice);
 
-        if(subId == null){return;}
+        if(gatewaySubscriptionId == null){return;}
 
-        subscriptionService.markSubscriptionPastDue(subId);
+        subscriptionService.markSubscriptionPastDue(gatewaySubscriptionId);
 
 
     }
