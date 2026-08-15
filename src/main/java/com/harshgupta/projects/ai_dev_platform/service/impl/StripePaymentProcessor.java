@@ -147,28 +147,46 @@ public class StripePaymentProcessor implements PaymentProcessor {
 
     }
 
-    private Long resolvePlanId(Price price) {
-        if(price == null || price.getId() == null){
-            return null;
-        }
-        return planRepository.findByStripePriceId(price.getId())
-                .map(Plan::getId)
-                .orElse(null);
-    }
-
-    private Instant toInstant(Long epoch) {
-        return epoch != null ? Instant.ofEpochSecond(epoch): null;
-    }
-
     private void handleCustomerSubscriptionDeleted(Subscription subscription) {
+        if(subscription == null){
+            log.error("Subscription is null");
+            return;
+        }
 
+        subscriptionService.cancelSubscription(subscription.getId());
     }
 
     private void handleInvoicePaid(Invoice invoice) {
+        String subId = extractSubscriptionId(invoice);
 
+        if(subId == null){return;}
+
+        try {
+            Subscription subscription = Subscription.retrieve(subId); //sdk calling the Stripe server
+
+            var item = subscription.getItems().getData().get(0);
+
+            Instant periodStart = toInstant(item.getCurrentPeriodStart());
+            Instant periodEnd = toInstant(item.getCurrentPeriodEnd());
+
+            subscriptionService.renewSubscriptionPeriod(
+                    subId,
+                    periodStart,
+                    periodEnd
+            );
+
+        } catch (StripeException e){
+            throw new RuntimeException(e);
+        }
     }
 
     private void handleInvoicePaymentFailed(Invoice invoice) {
+        String subId = extractSubscriptionId(invoice);
+
+        if(subId == null){return;}
+
+        subscriptionService.markSubscriptionPastDue(subId);
+
 
     }
 
@@ -186,6 +204,30 @@ public class StripePaymentProcessor implements PaymentProcessor {
         };
     }
 
+    private String extractSubscriptionId(Invoice invoice) {
+        var parent = invoice.getParent();
+        if(parent == null){
+            return null;
+        }
+
+        var subDetails = parent.getSubscriptionDetails();
+        if(subDetails == null){ return null; }
+
+        return subDetails.getSubscription();
+    }
+
+    private Long resolvePlanId(Price price) {
+        if(price == null || price.getId() == null){
+            return null;
+        }
+        return planRepository.findByStripePriceId(price.getId())
+                .map(Plan::getId)
+                .orElse(null);
+    }
+
+    private Instant toInstant(Long epoch) {
+        return epoch != null ? Instant.ofEpochSecond(epoch): null;
+    }
 
 
 
