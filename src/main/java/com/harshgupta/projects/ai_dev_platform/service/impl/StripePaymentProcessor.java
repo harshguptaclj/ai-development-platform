@@ -110,6 +110,11 @@ public class StripePaymentProcessor implements PaymentProcessor {
 
     private void handleCheckoutSessionCompleted(Session session, Map<String, String> metadata) {
 
+        if(session == null) {
+            log.error("session is null");
+            return;
+        }
+
         Long userId = Long.parseLong(metadata.get("user_id"));
         Long planId = Long.parseLong(metadata.get("plan_id"));
 

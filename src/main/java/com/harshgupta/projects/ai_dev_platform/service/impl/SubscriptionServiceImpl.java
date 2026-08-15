@@ -83,9 +83,11 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscription.setCurrentPeriodStart(newStart);
         subscription.setCurrentPeriodEnd(periodEnd);
 
-        if(subscription.getStatus() == SubscriptionStatus.PAST_DUE){
+        if(subscription.getStatus() == SubscriptionStatus.PAST_DUE || subscription.getStatus() == SubscriptionStatus.INCOMPLETE){
             subscription.setStatus(SubscriptionStatus.ACTIVE);
         }
+
+        subscriptionRepository.save(subscription);
 
     }
 
