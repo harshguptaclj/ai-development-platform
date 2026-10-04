@@ -1,8 +1,5 @@
 package com.harshgupta.projects.ai_dev_platform.service.impl;
 
-import com.harshgupta.projects.ai_dev_platform.dto.subscription.CheckoutRequest;
-import com.harshgupta.projects.ai_dev_platform.dto.subscription.CheckoutResponse;
-import com.harshgupta.projects.ai_dev_platform.dto.subscription.PortalResponse;
 import com.harshgupta.projects.ai_dev_platform.dto.subscription.SubscriptionResponse;
 import com.harshgupta.projects.ai_dev_platform.entity.Plan;
 import com.harshgupta.projects.ai_dev_platform.entity.Subscription;
@@ -11,6 +8,7 @@ import com.harshgupta.projects.ai_dev_platform.enums.SubscriptionStatus;
 import com.harshgupta.projects.ai_dev_platform.error.ResourceNotFoundException;
 import com.harshgupta.projects.ai_dev_platform.mapper.SubscriptionMapper;
 import com.harshgupta.projects.ai_dev_platform.repository.PlanRepository;
+import com.harshgupta.projects.ai_dev_platform.repository.ProjectMemberRepository;
 import com.harshgupta.projects.ai_dev_platform.repository.SubscriptionRepository;
 import com.harshgupta.projects.ai_dev_platform.repository.UserRepository;
 import com.harshgupta.projects.ai_dev_platform.security.AuthUtil;
@@ -33,6 +31,7 @@ public class SubscriptionServiceImpl implements SubscriptionService {
     private final SubscriptionMapper subscriptionMapper;
     private final UserRepository userRepository;
     private final PlanRepository planRepository;
+    private final ProjectMemberRepository projectMemberRepository;
 
     @Override
     public SubscriptionResponse getCurrentSubscription() {
@@ -135,6 +134,20 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         subscriptionRepository.save(subscription);
 
         //Notify User via email
+    }
+
+    @Override
+    public boolean canCreateNewProjects() {
+        Long userId = authUtil.getCurrentUserId();
+        SubscriptionResponse currentSubscription = getCurrentSubscription();
+
+        int countOfOwnedProject = projectMemberRepository.countProjectOwnedByUser(userId);
+
+        if(currentSubscription.plan() == null ){
+            long FREE_TIER_PROJECTS_ALLOWED = 1L;
+            return countOfOwnedProject < FREE_TIER_PROJECTS_ALLOWED;
+        }
+        return false;
     }
 
     private User getCurrentUser(Long userId) {

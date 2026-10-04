@@ -8,6 +8,7 @@ import com.harshgupta.projects.ai_dev_platform.entity.ProjectMember;
 import com.harshgupta.projects.ai_dev_platform.entity.ProjectMemberId;
 import com.harshgupta.projects.ai_dev_platform.entity.User;
 import com.harshgupta.projects.ai_dev_platform.enums.ProjectRole;
+import com.harshgupta.projects.ai_dev_platform.error.BadRequestException;
 import com.harshgupta.projects.ai_dev_platform.error.ResourceNotFoundException;
 import com.harshgupta.projects.ai_dev_platform.mapper.ProjectMapper;
 import com.harshgupta.projects.ai_dev_platform.repository.ProjectMemberRepository;
@@ -16,6 +17,7 @@ import com.harshgupta.projects.ai_dev_platform.repository.UserRepository;
 import com.harshgupta.projects.ai_dev_platform.security.AuthUtil;
 import com.harshgupta.projects.ai_dev_platform.security.SecurityExpressions;
 import com.harshgupta.projects.ai_dev_platform.service.ProjectService;
+import com.harshgupta.projects.ai_dev_platform.service.SubscriptionService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -39,16 +41,18 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMapper projectMapper;
     ProjectMemberRepository projectMemberRepository;
     AuthUtil authUtil;
-    private final SecurityExpressions security;
+    SubscriptionService subscriptionService;
+
 
     @Override
     public ProjectResponse createProject(ProjectRequest request) {
 
+        if(!subscriptionService.canCreateNewProjects()){
+            throw new BadRequestException("User can not create a new project with the current plan, Upgrade Plan now");
+        }
+
         Long userId = authUtil.getCurrentUserId();
 
-//        User owner = userRepository.findById(userId).orElseThrow(
-//                () -> new ResourceNotFoundException("User", userId.toString())
-//        );
         User owner = userRepository.getReferenceById(userId);
 
         Project project = Project.builder()

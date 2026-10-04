@@ -6,6 +6,7 @@ import com.harshgupta.projects.ai_dev_platform.dto.subscription.PortalResponse;
 import com.harshgupta.projects.ai_dev_platform.entity.Plan;
 import com.harshgupta.projects.ai_dev_platform.entity.User;
 import com.harshgupta.projects.ai_dev_platform.enums.SubscriptionStatus;
+import com.harshgupta.projects.ai_dev_platform.error.BadRequestException;
 import com.harshgupta.projects.ai_dev_platform.error.ResourceNotFoundException;
 import com.harshgupta.projects.ai_dev_platform.repository.PlanRepository;
 import com.harshgupta.projects.ai_dev_platform.repository.UserRepository;
@@ -85,7 +86,27 @@ public class StripePaymentProcessor implements PaymentProcessor {
 
     @Override
     public PortalResponse openCustomerPortal() {
-        return null;
+        Long UserId = authUtil.getCurrentUserId();
+        User user = getUser(UserId);
+
+        String stripeCustomerId = user.getStripeCustomerId();
+
+        if(stripeCustomerId == null || stripeCustomerId.isEmpty()){
+            throw new BadRequestException("User does not have a Stripe Customer Id, User Id : " + user.getId());
+        }
+
+        com.stripe.model.billingportal.Session portalSession = null;
+        try {
+            portalSession = com.stripe.model.billingportal.Session.create(
+                    com.stripe.param.billingportal.SessionCreateParams.builder()
+                            .setCustomer(stripeCustomerId)
+                            .setReturnUrl(frontendUrl)
+                            .build()
+            );
+        } catch (StripeException e) {
+            throw new RuntimeException(e);
+        }
+        return new PortalResponse(portalSession.getUrl());
     }
 
     @Override
