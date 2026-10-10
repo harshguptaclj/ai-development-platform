@@ -2,7 +2,7 @@ package com.harshgupta.projects.ai_dev_platform.controller;
 
 import com.harshgupta.projects.ai_dev_platform.dto.project.FileContentResponse;
 import com.harshgupta.projects.ai_dev_platform.dto.project.FileNode;
-import com.harshgupta.projects.ai_dev_platform.service.FileService;
+import com.harshgupta.projects.ai_dev_platform.service.ProjectFileService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,16 +17,16 @@ import java.util.List;
 @RequestMapping("/api/projects/{projectId}/files")
 public class FileController {
 
-    private final FileService fileService;
+    private final ProjectFileService projectFileService;
 
     @GetMapping
     public ResponseEntity<List<FileNode>> getFileTree(@PathVariable long projectId) {
-        return ResponseEntity.ok(fileService.getFileTree(projectId));
+        return ResponseEntity.ok(projectFileService.getFileTree(projectId));
     }
 
     @GetMapping("/{*path}")
     public ResponseEntity<FileContentResponse> getFile(@PathVariable long projectId, @PathVariable String path) {
-        return ResponseEntity.ok(fileService.getFileContent(projectId, path));
+        return ResponseEntity.ok(projectFileService.getFileContent(projectId, path));
     }
 
 }

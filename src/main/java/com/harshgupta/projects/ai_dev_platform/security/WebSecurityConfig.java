@@ -1,5 +1,6 @@
 package com.harshgupta.projects.ai_dev_platform.security;
 
+import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,6 +28,7 @@ public class WebSecurityConfig {
                .sessionManagement(sessionManagementConfig -> sessionManagementConfig
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
+                        .dispatcherTypeMatchers(DispatcherType.ASYNC, DispatcherType.ERROR).permitAll()
                         .requestMatchers("/api/auth/**","/webhooks/**").permitAll()
                         .anyRequest().authenticated()
                 )

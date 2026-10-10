@@ -144,10 +144,10 @@ public class SubscriptionServiceImpl implements SubscriptionService {
         int countOfOwnedProject = projectMemberRepository.countProjectOwnedByUser(userId);
 
         if(currentSubscription.plan() == null ){
-            long FREE_TIER_PROJECTS_ALLOWED = 1L;
+            long FREE_TIER_PROJECTS_ALLOWED = 100L;
             return countOfOwnedProject < FREE_TIER_PROJECTS_ALLOWED;
         }
-        return false;
+        return countOfOwnedProject < currentSubscription.plan().maxProjects();
     }
 
     private User getCurrentUser(Long userId) {
