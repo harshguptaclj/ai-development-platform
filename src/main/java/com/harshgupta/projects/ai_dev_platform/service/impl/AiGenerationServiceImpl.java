@@ -1,6 +1,7 @@
 package com.harshgupta.projects.ai_dev_platform.service.impl;
 
 import com.harshgupta.projects.ai_dev_platform.llm.PromptUtils;
+import com.harshgupta.projects.ai_dev_platform.llm.advisors.FileTreeContextAdvisor;
 import com.harshgupta.projects.ai_dev_platform.security.AuthUtil;
 import com.harshgupta.projects.ai_dev_platform.service.AiGenerationService;
 import com.harshgupta.projects.ai_dev_platform.service.ProjectFileService;
@@ -27,6 +28,7 @@ public class AiGenerationServiceImpl implements AiGenerationService {
     private final AuthUtil authUtil;
     private static final Pattern FILE_TAG_PATTERN = Pattern.compile("<file path=\"([^\"]+)\">(.*?)</file>", Pattern.DOTALL);
     private final ProjectFileService projectFileService;
+    private final FileTreeContextAdvisor fileTreeContextAdvisor;
 
     @Override
    @PreAuthorize("@security.canEditProject(#projectId)")
@@ -46,6 +48,7 @@ public class AiGenerationServiceImpl implements AiGenerationService {
                 .user(message)
                 .advisors( advisorSpec -> {
                     advisorSpec.params(advisorParams);
+                    advisorSpec.advisors(fileTreeContextAdvisor);
                 })
                 .stream()
                 .chatResponse()

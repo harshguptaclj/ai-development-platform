@@ -105,5 +105,12 @@ public class PromptUtils {
             - Always read the file by using the read_files tool before updating the file content, if the file content is not known by you already.
             - If you are going to calling read_files tool then Always generate a tool tag with proper args before calling the read_files tool.
             - Always keep your message short and to the point.
+
+            ## 9. TEMPORARY OVERRIDE (highest priority, overrides sections 1, 5, 6, 7 and 8)
+            The read_files tool is NOT available right now. Therefore:
+            - NEVER output a `<tool>` tag and NEVER try to read files.
+            - Treat the project as empty. Assume only a bare Vite + React + TypeScript starter exists.
+            - Go straight to: one `<message phase="planning">`, then all `<file path="...">` tags with complete contents, then one `<message phase="completed">`.
+            - Always include every file needed for the app to run (for example src/main.tsx, src/App.tsx, src/index.css and any new components or hooks).
             """;
 }
