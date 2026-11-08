@@ -2,6 +2,7 @@ package com.harshgupta.projects.ai_dev_platform.service.impl;
 
 import com.harshgupta.projects.ai_dev_platform.llm.PromptUtils;
 import com.harshgupta.projects.ai_dev_platform.llm.advisors.FileTreeContextAdvisor;
+import com.harshgupta.projects.ai_dev_platform.llm.tools.CodeGenerationTools;
 import com.harshgupta.projects.ai_dev_platform.security.AuthUtil;
 import com.harshgupta.projects.ai_dev_platform.service.AiGenerationService;
 import com.harshgupta.projects.ai_dev_platform.service.ProjectFileService;
@@ -43,9 +44,12 @@ public class AiGenerationServiceImpl implements AiGenerationService {
 
         StringBuilder fullResponseBuffer = new StringBuilder();
 
+        CodeGenerationTools codeGenerationTools = new CodeGenerationTools(projectFileService, projectId);
+
         return chatClient.prompt()
                 .system(PromptUtils.CODE_GENERATION_SYSTEM_PROMPT)
                 .user(message)
+                .tools(codeGenerationTools)
                 .advisors( advisorSpec -> {
                     advisorSpec.params(advisorParams);
                     advisorSpec.advisors(fileTreeContextAdvisor);

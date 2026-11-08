@@ -9,6 +9,7 @@ import com.harshgupta.projects.ai_dev_platform.mapper.ProjectFileMapper;
 import com.harshgupta.projects.ai_dev_platform.repository.ProjectFileRepository;
 import com.harshgupta.projects.ai_dev_platform.repository.ProjectRepository;
 import com.harshgupta.projects.ai_dev_platform.service.ProjectFileService;
+import io.minio.GetObjectArgs;
 import io.minio.MinioClient;
 import io.minio.PutObjectArgs;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +29,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProjectFileServiceImpl implements ProjectFileService {
 
+    private static final String BUCKET_NAME = "projects";
     private final ProjectRepository projectRepository;
     private final ProjectFileRepository projectFileRepository;
     private final MinioClient minioClient;
@@ -45,7 +47,22 @@ public class ProjectFileServiceImpl implements ProjectFileService {
 
     @Override
     public FileContentResponse getFileContent(long projectId, String path) {
-        return null;
+        String objectName = projectId + "/" + path;
+
+        try (
+                InputStream is = minioClient.getObject(
+                        GetObjectArgs.builder()
+                                .bucket(BUCKET_NAME)
+                                .object(objectName)
+                                .build())) {
+
+            String content = new String(is.readAllBytes(), StandardCharsets.UTF_8);
+            return new FileContentResponse(path, content);
+
+        } catch (Exception e) {
+            log.error("Failed to read file: {}/{}", projectId, path, e);
+            throw new RuntimeException("Failed to read file content", e);
+        }
     }
 
     @Override

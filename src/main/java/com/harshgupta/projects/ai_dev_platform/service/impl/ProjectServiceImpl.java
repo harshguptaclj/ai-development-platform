@@ -17,6 +17,7 @@ import com.harshgupta.projects.ai_dev_platform.repository.UserRepository;
 import com.harshgupta.projects.ai_dev_platform.security.AuthUtil;
 import com.harshgupta.projects.ai_dev_platform.security.SecurityExpressions;
 import com.harshgupta.projects.ai_dev_platform.service.ProjectService;
+import com.harshgupta.projects.ai_dev_platform.service.ProjectTemplateService;
 import com.harshgupta.projects.ai_dev_platform.service.SubscriptionService;
 import jakarta.transaction.Transactional;
 import lombok.AccessLevel;
@@ -42,6 +43,7 @@ public class ProjectServiceImpl implements ProjectService {
     ProjectMemberRepository projectMemberRepository;
     AuthUtil authUtil;
     SubscriptionService subscriptionService;
+    ProjectTemplateService projectTemplateService;
 
 
     @Override
@@ -74,6 +76,8 @@ public class ProjectServiceImpl implements ProjectService {
                 .build();
 
         projectMemberRepository.save(projectMember);
+
+        projectTemplateService.initializeProjectFromTemplate(project.getId());
 
         return projectMapper.toProjectResponse(project);
     }
